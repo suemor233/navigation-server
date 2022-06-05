@@ -70,19 +70,7 @@ export class UserService {
       return PrevFootstep as any
     }
   
-    async signToken(_id: string) {
-      const user = await this.userModel.findById(_id).select('authCode')
-      if (!user) {
-        throw new MasterLostException()
-      }
-      const authCode = user.authCode
-      const payload = {
-        _id,
-        authCode,
-      }
-  
-      return this.jwtService.sign(payload)
-    }
+
 
    async hasMaster() {
     return !!(await this.userModel.countDocuments())

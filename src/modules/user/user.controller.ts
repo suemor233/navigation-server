@@ -1,8 +1,10 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
+import { Auth } from '~/common/decorator/auth.decorator';
 import { IpLocation, IpRecord } from '~/common/decorator/ip.decorator';
 import { ApiName } from '~/common/decorator/openapi.decorator';
 import { getAvatar } from '~/utils/tool.util';
+import { AuthService } from '../auth/auth.service';
 import { LoginDto, UserDto } from './user.dto';
 import { UserModel } from './user.model';
 import { UserService } from './user.service';
@@ -10,7 +12,8 @@ import { UserService } from './user.service';
 @ApiName
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+    private readonly authService: AuthService,) { }
 
 
   @Post('register')
@@ -24,12 +27,12 @@ export class UserController {
   @ApiOperation({ summary: '登录' })
   @HttpCode(200)
   async login(@Body() dto: LoginDto, @IpLocation() ipLocation: IpRecord) {
-    const user =  await this.userService.login(dto.username, dto.password)
-    const footstep =  await this.userService.recordFootstep(ipLocation.ip)
+    const user = await this.userService.login(dto.username, dto.password)
+    const footstep = await this.userService.recordFootstep(ipLocation.ip)
     const { username, created, url, mail, id } = user
     const avatar = user.avatar ?? getAvatar(mail)
     return {
-      token: await this.userService.signToken(user._id),
+      token: await this.authService.signToken(user._id),
       ...footstep,
       username,
       created,
@@ -40,5 +43,12 @@ export class UserController {
       id,
     }
   }
+  @Get('check_logged')
+  @ApiOperation({ summary: '判断当前 Token 是否有效 ' })
+  @Auth()
+  checkLogged(isMaster: boolean) {
+    return 'ok'
+  }
+
 
 }

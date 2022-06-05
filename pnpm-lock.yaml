@@ -5,6 +5,7 @@ specifiers:
   '@nestjs/common': ^8.0.0
   '@nestjs/core': ^8.0.0
   '@nestjs/jwt': ^8.0.1
+  '@nestjs/passport': ^8.2.1
   '@nestjs/platform-express': ^8.0.0
   '@nestjs/schematics': ^8.0.0
   '@nestjs/swagger': ^5.2.1
@@ -30,6 +31,8 @@ specifiers:
   mongoose-paginate-v2: ^1.6.3
   nanoid: ^3.3.4
   node-machine-id: ^1.1.12
+  passport: ^0.6.0
+  passport-jwt: ^4.0.0
   prettier: ^2.3.2
   reflect-metadata: ^0.1.13
   rimraf: ^3.0.2
@@ -47,6 +50,7 @@ dependencies:
   '@nestjs/common': 8.4.6_kgmvgmqc4iohdboj3f7yqhrie4
   '@nestjs/core': 8.4.6_suave6mfkne66p6dqupcjv2744
   '@nestjs/jwt': 8.0.1_@nestjs+common@8.4.6
+  '@nestjs/passport': 8.2.1_rgfpjs3s462m3ujji7kreilcr4
   '@nestjs/platform-express': 8.4.6_etfae4mmenqzp3rs3pua7csngy
   '@nestjs/swagger': 5.2.1_zi4tuyx3qtp34xthrn3ho5tamm
   '@typegoose/typegoose': 9.9.0_mongoose@6.3.5
@@ -60,6 +64,8 @@ dependencies:
   mongoose-paginate-v2: 1.6.3
   nanoid: 3.3.4
   node-machine-id: 1.1.12
+  passport: 0.6.0
+  passport-jwt: 4.0.0
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
   rxjs: 7.5.5
@@ -933,6 +939,16 @@ packages:
       class-transformer: 0.5.1
       class-validator: 0.13.2
       reflect-metadata: 0.1.13
+    dev: false
+
+  /@nestjs/passport/8.2.1_rgfpjs3s462m3ujji7kreilcr4:
+    resolution: {integrity: sha512-HXEKMLX1x865+lsJB4srwKHBciDNAhWY1Ha+xbxYRbk7J5leGDoHJAmeqe+Wb3NDn5nkboggLV87t0q2mbYc8w==}
+    peerDependencies:
+      '@nestjs/common': ^6.0.0 || ^7.0.0 || ^8.0.0
+      passport: ^0.4.0 || ^0.5.0
+    dependencies:
+      '@nestjs/common': 8.4.6_kgmvgmqc4iohdboj3f7yqhrie4
+      passport: 0.6.0
     dev: false
 
   /@nestjs/platform-express/8.4.6_etfae4mmenqzp3rs3pua7csngy:
@@ -4496,6 +4512,27 @@ packages:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
 
+  /passport-jwt/4.0.0:
+    resolution: {integrity: sha512-BwC0n2GP/1hMVjR4QpnvqA61TxenUMlmfNjYNgK0ZAs0HK4SOQkHcSv4L328blNTLtHq7DbmvyNJiH+bn6C5Mg==}
+    dependencies:
+      jsonwebtoken: 8.5.1
+      passport-strategy: 1.0.0
+    dev: false
+
+  /passport-strategy/1.0.0:
+    resolution: {integrity: sha512-CB97UUvDKJde2V0KDWWB3lyf6PC3FaZP7YxZ2G8OAtn9p4HI9j9JLP9qjOGZFvyl8uwNT8qM+hGnz/n16NI7oA==}
+    engines: {node: '>= 0.4.0'}
+    dev: false
+
+  /passport/0.6.0:
+    resolution: {integrity: sha512-0fe+p3ZnrWRW74fe8+SvCyf4a3Pb2/h7gFkQ8yTJpAO50gDzlfjZUZTO1k5Eg9kUct22OxHLqDZoKUWRHOh9ug==}
+    engines: {node: '>= 0.4.0'}
+    dependencies:
+      passport-strategy: 1.0.0
+      pause: 0.0.1
+      utils-merge: 1.0.1
+    dev: false
+
   /path-exists/4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
@@ -4524,6 +4561,10 @@ packages:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
     dev: true
+
+  /pause/0.0.1:
+    resolution: {integrity: sha1-HUCLP9t2kjuVQ9lvtMnf1TXZy10=}
+    dev: false
 
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
