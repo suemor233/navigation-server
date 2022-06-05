@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ReturnModelType } from '@typegoose/typegoose';
+import { InjectModel } from '~/transformers/model.transformer'
+import { UserDto } from './user.dto';
+import { UserModel } from './user.model';
+
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
 
-  findAll() {
-    return `This action returns all user`;
-  }
+  constructor(
+    @InjectModel(UserModel)
+    private readonly userModel: ReturnModelType<typeof UserModel>,
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  ) {}
+  async createUser(userDto: UserDto) {
+     const res =  await this.userModel.create(userDto)
+     return res
   }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+ 
 }

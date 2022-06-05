@@ -16,14 +16,12 @@ export const MONGO_DB = {
   host: '127.0.0.1',
   port: 27017,
   get uri() {
-    return `mongodb://${this.host}:${this.port}/${this.dbName
-    }`
+    return `mongodb://${this.host}:${this.port}/${this.dbName}`
   },
 }
 
-
 export const REDIS = {
-  host:   'localhost',
+  host:  'localhost',
   port:  6379,
   password: null,
   ttl: null,
