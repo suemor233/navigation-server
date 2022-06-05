@@ -9,7 +9,7 @@ import {
 
 import { ApiProperty } from '@nestjs/swagger'
 
-import { IsAllowedUrl } from '../..//utils/validator/isAllowedUrl'
+import { IsAllowedUrl } from '~/utils/validator/isAllowedUrl'
 
 class UserOptionDto {
   @IsOptional()
@@ -29,11 +29,6 @@ class UserOptionDto {
   readonly url?: string
 
   @ApiProperty({ required: false })
-  @IsString()
-  @IsOptional()
-  name?: string
-
-  @ApiProperty({ required: false })
   @IsAllowedUrl()
   @IsOptional()
   readonly avatar?: string
@@ -44,16 +39,16 @@ class UserOptionDto {
   readonly socialIds?: Record<string, any>
 }
 
-export class UserDto {
+export class UserDto extends UserOptionDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty({ message: '用户名？' })
   readonly username: string
 
-  @ApiProperty({ required: false })
   @IsString()
-  @IsOptional()
-  name?: string
+  @ApiProperty()
+  @IsNotEmpty({ message: '密码？' })
+  readonly password: string
 }
 
 export class LoginDto {

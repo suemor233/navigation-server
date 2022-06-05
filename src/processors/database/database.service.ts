@@ -12,8 +12,6 @@ export class DatabaseService {
   ) {}
 
 
-
-
   public get db() {
     return this.connection.db
   }

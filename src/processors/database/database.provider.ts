@@ -1,6 +1,3 @@
-/**
- * @copy https://github.com/surmon-china/nodepress/blob/main/src/processors/database/database.provider.ts
- */
 import { mongoose } from '@typegoose/typegoose'
 
 import { MONGO_DB } from '~/app.config'
