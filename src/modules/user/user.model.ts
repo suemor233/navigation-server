@@ -1,3 +1,4 @@
+import { AboutModel } from './../about/about.model';
 import { hashSync } from 'bcrypt'
 import { Schema } from 'mongoose'
 
@@ -30,6 +31,7 @@ export class TokenModel {
   expired?: Date
 
   @prop({ unique: true })
+
   name: string
 }
 
@@ -62,6 +64,9 @@ export class UserModel extends BaseModel {
   @prop()
   url?: string
 
+  @prop() // for one
+  about:AboutModel;
+
   @prop()
   lastLoginTime?: Date
 
@@ -73,5 +78,4 @@ export class UserModel extends BaseModel {
 
   @prop({ select: false, required: true })
   authCode!: string
-
 }

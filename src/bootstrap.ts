@@ -26,7 +26,6 @@ export async function bootstrap() {
   )
 
   app.setGlobalPrefix(isDev ? '' : `api/v${API_VERSION}`)
-
   if (isDev) {
     app.useGlobalInterceptors(new LoggingInterceptor())
   }

@@ -13,7 +13,7 @@ export const CROSS_DOMAIN = {
 
 export const MONGO_DB = {
   dbName: 'navigation',
-  host: '127.0.0.1',
+  host: 'localhost',
   port: 27017,
   get uri() {
     return `mongodb://${this.host}:${this.port}/${this.dbName}`

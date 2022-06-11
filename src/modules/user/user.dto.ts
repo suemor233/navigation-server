@@ -28,7 +28,7 @@ class UserOptionDto {
   @IsOptional()
   readonly url?: string
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, example: 'http://example.com' })
   @IsAllowedUrl()
   @IsOptional()
   readonly avatar?: string

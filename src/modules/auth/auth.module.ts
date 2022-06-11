@@ -20,7 +20,6 @@ export const __secret: any =
 if (isDev ) {
   console.log(__secret)
 }
-
 const jwtModule = JwtModule.registerAsync({
   useFactory() {
     return {

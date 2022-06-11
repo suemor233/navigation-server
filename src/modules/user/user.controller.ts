@@ -1,12 +1,13 @@
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Post } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { Auth } from '~/common/decorator/auth.decorator';
+import { CurrentUser } from '~/common/decorator/current-user.decorator';
 import { IpLocation, IpRecord } from '~/common/decorator/ip.decorator';
 import { ApiName } from '~/common/decorator/openapi.decorator';
 import { getAvatar } from '~/utils/tool.util';
 import { AuthService } from '../auth/auth.service';
-import { LoginDto, UserDto } from './user.dto';
-import { UserModel } from './user.model';
+import { LoginDto, UserDto, UserPatchDto } from './user.dto';
+import { UserDocument, UserModel } from './user.model';
 import { UserService } from './user.service';
 
 @ApiName
@@ -43,11 +44,29 @@ export class UserController {
       id,
     }
   }
+
+  @Get()
+  @ApiOperation({
+    summary:'获取用户信息',
+  })
+  async getUserInfo() {
+    return this.userService.getUserInfo()
+  }
+  
   @Get('check_logged')
   @ApiOperation({ summary: '判断当前 Token 是否有效 ' })
   @Auth()
   checkLogged(isMaster: boolean) {
     return 'ok'
+  }
+  @Patch()
+  @ApiOperation({ summary: '修改主人的信息' })
+  @Auth()
+  async patchMasterData(
+    @Body() body: UserPatchDto,
+    @CurrentUser() user: UserDocument,
+  ) {
+    return await this.userService.patchUserData(user, body)
   }
 
 

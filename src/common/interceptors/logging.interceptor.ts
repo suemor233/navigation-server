@@ -17,7 +17,7 @@ import {
   SetMetadata,
 } from '@nestjs/common'
 
-import { HTTP_REQUEST_TIME } from '../constants/meta.constant'
+import { HTTP_REQUEST_TIME } from '~/constants/meta.constant'
 import { getNestExecutionContextRequest } from '~/transformers/get-req.transformer'
 
 @Injectable()
