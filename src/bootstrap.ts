@@ -1,6 +1,5 @@
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import cluster from "cluster";
 import { API_VERSION, CROSS_DOMAIN, PORT } from "./app.config";
 import { AppModule } from "./app.module";
 import { LoggingInterceptor } from "./common/interceptors/logging.interceptor";

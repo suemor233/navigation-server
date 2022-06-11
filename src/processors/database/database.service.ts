@@ -1,18 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { ReturnModelType, mongoose } from '@typegoose/typegoose'
-
-import { DB_CONNECTION_TOKEN } from '../../constants/system.constant'
+import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 
 
 @Injectable()
-export class DatabaseService {
-  constructor(
+ export class PrismaService extends PrismaClient implements OnModuleInit {
 
-    @Inject(DB_CONNECTION_TOKEN) private connection: mongoose.Connection,
-  ) {}
+  async onModuleInit() {
+    await this.$connect();
+  }
 
 
-  public get db() {
-    return this.connection.db
+  async enableShutdownHooks(app: INestApplication) {
+    this.$on('beforeExit', async () => {
+      await app.close();
+    });
   }
 }

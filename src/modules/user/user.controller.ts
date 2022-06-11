@@ -6,21 +6,22 @@ import { IpLocation, IpRecord } from '~/common/decorator/ip.decorator';
 import { ApiName } from '~/common/decorator/openapi.decorator';
 import { getAvatar } from '~/utils/tool.util';
 import { AuthService } from '../auth/auth.service';
+import { userType } from './interface/user.interface';
 import { LoginDto, UserDto, UserPatchDto } from './user.dto';
-import { UserDocument, UserModel } from './user.model';
 import { UserService } from './user.service';
 
 @ApiName
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService,
-    private readonly authService: AuthService,) { }
+    private readonly authService: AuthService,
+    ) { }
 
 
   @Post('register')
   @ApiOperation({ summary: '注册' })
   async register(@Body() userDto: UserDto) {
-    return await this.userService.createUser(userDto as UserModel)
+    return await this.userService.createUser(userDto)
   }
 
 
@@ -33,7 +34,7 @@ export class UserController {
     const { username, created, url, mail, id } = user
     const avatar = user.avatar ?? getAvatar(mail)
     return {
-      token: await this.authService.signToken(user._id),
+      token: await this.authService.signToken(user.id),
       ...footstep,
       username,
       created,
@@ -59,12 +60,14 @@ export class UserController {
   checkLogged(isMaster: boolean) {
     return 'ok'
   }
+
+
   @Patch()
   @ApiOperation({ summary: '修改主人的信息' })
   @Auth()
   async patchMasterData(
     @Body() body: UserPatchDto,
-    @CurrentUser() user: UserDocument,
+    @CurrentUser() user: userType,
   ) {
     return await this.userService.patchUserData(user, body)
   }

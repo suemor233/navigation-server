@@ -16,7 +16,6 @@ import { Reflector } from '@nestjs/core'
 
 import { HTTP_RES_TRANSFORM_PAGINATE } from '~/constants/meta.constant'
 import * as SYSTEM from '~/constants/system.constant'
-import { transformDataToPaginate } from '~/transformers/paginate.transformer'
 
 export interface Response<T> {
   data: T
@@ -48,10 +47,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
           context.switchToHttp().getResponse().status(204)
           return data
         }
-        // 分页转换
-        if (this.reflector.get(HTTP_RES_TRANSFORM_PAGINATE, handler)) {
-          return transformDataToPaginate(data)
-        }
+
         console.log();
         return isArrayLike(data) ? { data } : data
       }),

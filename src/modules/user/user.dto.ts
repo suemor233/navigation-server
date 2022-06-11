@@ -37,6 +37,8 @@ class UserOptionDto {
   @IsObject()
   @ApiProperty({ description: '各种社交 id 记录' })
   readonly socialIds?: Record<string, any>
+
+  authCode!: string
 }
 
 export class UserDto extends UserOptionDto {
@@ -48,7 +50,7 @@ export class UserDto extends UserOptionDto {
   @IsString()
   @ApiProperty()
   @IsNotEmpty({ message: '密码？' })
-  readonly password: string
+   password: string
 }
 
 export class LoginDto {

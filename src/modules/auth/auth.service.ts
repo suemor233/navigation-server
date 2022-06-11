@@ -1,39 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '~/transformers/model.transformer';
-import {
-  TokenModel,
-  UserModel as User,
-  UserDocument,
-  UserModel,
-} from '~/modules/user/user.model'
-import { ReturnModelType } from '@typegoose/typegoose';
+
 import { JwtService } from '@nestjs/jwt';
 import { MasterLostException } from '~/common/exceptions/master-lost.exception';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { PrismaService } from '~/processors/database/database.service';
 @Injectable()
 export class AuthService {
 
   constructor(
-    @InjectModel(User) private readonly userModel: ReturnModelType<typeof User>,
     private readonly jwtService: JwtService,
+    private prisma: PrismaService,
   ) {}
 
-  async signToken(_id: string) {
-    const user = await this.userModel.findById(_id).select('authCode')
+  async signToken(id: string) {
+    const user = await this.prisma.user.findFirst({
+      where:{
+        id
+      }
+    })
     if (!user) {
       throw new MasterLostException()
     }
     const authCode = user.authCode
     const payload = {
-      _id,
+      id,
       authCode,
     }
 
     return this.jwtService.sign(payload)
   }
 
-  async verifyPayload(payload: JwtPayload): Promise<UserDocument | null> {
-    const user = await this.userModel.findById(payload._id).select('+authCode')
+  async verifyPayload(payload: JwtPayload) {
+    const user = await this.prisma.user.findFirst({
+      where:{
+        id:payload._id
+      }
+    })
 
     if (!user) {
       throw new MasterLostException()
