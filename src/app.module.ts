@@ -6,12 +6,13 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 import { SocketGateway } from './processors/gateway/ws.gateway';
 import { DatabaseModule } from './processors/database/database.module';
+import { AboutModule } from './modules/about/about.module';
 
 @Module({
   imports: [
     DatabaseModule,
     UserModule,
-    // AboutModule,
+    AboutModule,
   ].filter(Boolean) as Type<NestModule>[],
   controllers: [AppController],
   providers:[

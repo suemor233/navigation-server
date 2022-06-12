@@ -34,9 +34,8 @@ class UserOptionDto {
   readonly avatar?: string
 
   @IsOptional()
-  @IsObject()
   @ApiProperty({ description: '各种社交 id 记录' })
-  readonly socialIds?: Record<string, any>
+  readonly socialIds?: Array<Record<string, any>> | Record<string, any>
 
   authCode!: string
 }

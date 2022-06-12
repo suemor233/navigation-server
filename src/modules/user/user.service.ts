@@ -1,6 +1,5 @@
 import { SocketGateway } from './../../processors/gateway/ws.gateway';
 import { BadRequestException, ForbiddenException, Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt'
 import { MasterLostException } from '~/common/exceptions/master-lost.exception';
 import { nanoid } from 'nanoid'
 import { LoginDto, UserDto, UserPatchDto } from './user.dto';
@@ -74,7 +73,7 @@ export class UserService {
     }
     await this.prisma.user.update({
       where: {
-        username:master.username
+        username: master.username
       },
       data: {
         lastLoginTime: new Date(),
@@ -86,65 +85,87 @@ export class UserService {
     return PrevFootstep as any
   }
 
-    async getUserInfo() {
-      const user = await this.prisma.user.findFirst({
-        select:{
-          id:true,
-          username:true,
-          introduce:true,
-          avatar:true,
-          mail:true,
-          url:true,
-          lastLoginTime:true,
-          lastLoginIp:true
+  async getUserInfo() {
+    const user = await this.prisma.user.findFirst({
+      select: {
+        id: true,
+        username: true,
+        introduce: true,
+        avatar: true,
+        mail: true,
+        url: true,
+        lastLoginTime: true,
+        lastLoginIp: true,
+        socialIds: {
+          select: {
+           key:true,
+           value:true
+          }
         }
-      })
-      if (!user) {
-        throw new BadRequestException('没有完成初始化!')
-      }
-      const avatar = user.avatar ?? getAvatar(user.mail)
-      return { ...user, avatar }
-    }
-
-
-    async patchUserData(user: userType , data: UserPatchDto) {
-      const { password } = data
-      const doc = { ...data }
-      if (password !== undefined) {
-        const { id } = user
-        const currentUser = await this.prisma.user
-          .findFirst({where:{id}})
-
-
-        if (!currentUser) {
-          throw new MasterLostException()
-        }
-
-        // 1. 验证新旧密码是否一致
-        const isSamePassword = compareSync(password, currentUser.password)
-        if (isSamePassword) {
-          throw new UnprocessableEntityException('密码可不能和原来的一样哦')
-        }
-
-        // 2. 认证码重新生成
-        const newCode = nanoid(10)
-        doc.authCode = newCode
-        doc.password = hashSync(doc.password, 6)
-      }
+      },
       
+    })
+    if (!user) {
+      throw new BadRequestException('没有完成初始化!')
+    }
+    const avatar = user.avatar ?? getAvatar(user.mail)
+    return { ...user, avatar }
+  }
+
+
+  async patchUserData(user: userType, data: UserPatchDto) {
+    const { password } = data
+    const doc = { ...data }
+    if (password !== undefined) {
+      const { id } = user
+      const currentUser = await this.prisma.user
+        .findFirst({ where: { id } })
+
+
+      if (!currentUser) {
+        throw new MasterLostException()
+      }
+
+      // 1. 验证新旧密码是否一致
+      const isSamePassword = compareSync(password, currentUser.password)
+      if (isSamePassword) {
+        throw new UnprocessableEntityException('密码可不能和原来的一样哦')
+      }
+
+      // 2. 认证码重新生成
+      const newCode = nanoid(10)
+      doc.authCode = newCode
+      doc.password = hashSync(doc.password, 6)
+    }
+    if (doc.socialIds &&  Object.keys(doc.socialIds).length > 0) {
+      await this.prisma.socialIds.deleteMany({})
       await this.prisma.user.update({
-        where:{
-          id:user.id
+        where: {
+          id: user.id
         },
         data:{
-          ...doc
+          socialIds:{
+            create: doc.socialIds
+          }
         }
+      
       })
-      const res = await this.getUserInfo()
-      this.ws.server.emit('user-update', await this.getUserInfo())
-      return res
-
     }
+    delete doc.socialIds
+    await this.prisma.user.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        ...doc
+      }
+    })
+
+    const res = await this.getUserInfo()
+    this.ws.server.emit('user-update', await this.getUserInfo())
+    return res
+
+  }
 
 
 

@@ -1,18 +1,19 @@
-// import { Injectable } from '@nestjs/common';
-// import { ReturnModelType } from '@typegoose/typegoose';
-// import { SocketGateway } from '~/processors/gateway/ws.gateway';
-// import { InjectModel } from '~/transformers/model.transformer';
-// import { AboutModel } from './about.model';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '~/processors/database/database.service';
+import { SocketGateway } from '~/processors/gateway/ws.gateway';
+import { AboutModel } from './about.dto';
 
-// @Injectable()
-// export class AboutService {
-//   constructor(
-//     @InjectModel(AboutModel)
-//     private readonly aboutModel: ReturnModelType<typeof AboutModel>,
-//     private readonly ws: SocketGateway,
-//   ) { }
+@Injectable()
+export class AboutService {
+  constructor(
+    private prisma: PrismaService,
+    private readonly ws: SocketGateway,
+  ) { }
 
-//   createAbout(about: AboutModel) {
-//     return this.aboutModel.create(about);
-//   }
-// }
+  async createAbout(about: AboutModel[]) {
+    await this.prisma.about.deleteMany({});
+    return await this.prisma.about.createMany({
+      data: about
+    })
+  }
+}
