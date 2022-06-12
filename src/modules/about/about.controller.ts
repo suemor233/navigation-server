@@ -12,7 +12,6 @@ export class AboutController {
   @Post()
   @ApiOperation({ summary: '添加基本介绍' })
   async create(@Body() about: AboutModel[]) {
-    console.log(...about);
     return await this.aboutService.createAbout(about)
   }
  

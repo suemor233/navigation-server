@@ -137,7 +137,15 @@ export class UserService {
       doc.authCode = newCode
       doc.password = hashSync(doc.password, 6)
     }
-    if (doc.socialIds &&  Object.keys(doc.socialIds).length > 0) {
+    if (doc.socialIds) {
+      const _key = []
+      doc.socialIds.map(item =>{
+        if(_key.indexOf(item.key) === -1){
+          _key.push(item.key)
+        }else {
+          throw new UnprocessableEntityException('不能有重复的社交链接')
+        }
+      })
       await this.prisma.socialIds.deleteMany({})
       await this.prisma.user.update({
         where: {

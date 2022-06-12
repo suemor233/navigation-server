@@ -26,7 +26,7 @@ export class AuthService {
       id,
       authCode,
     }
-
+    
     return this.jwtService.sign(payload)
   }
 
