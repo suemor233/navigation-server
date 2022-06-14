@@ -29,7 +29,7 @@ export class AboutService {
       throw new NotImplementedException('名称不能重复')
     }
 
-
+    this.ws.server.emit('user-about', await this.aboutInfo())
     return await this.aboutInfo()
   }
 
