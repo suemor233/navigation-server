@@ -28,10 +28,16 @@ class UserOptionDto {
   @IsOptional()
   readonly url?: string
 
-  @ApiProperty({ required: false, example: 'http://example.com' })
+  @ApiProperty({ required: false, example: 'https://cdn.jsdelivr.net/gh/suemor233/static@main/img/89030875.jpeg' })
   @IsAllowedUrl()
   @IsOptional()
   readonly avatar?: string
+
+
+  @ApiProperty({ required: false, example: 'https://y.suemor.com/imagesva2022-255.png' })
+  @IsAllowedUrl()
+  @IsOptional()
+  readonly backgroundImage?: string
 
   @IsOptional()
   @ApiProperty({ description: '各种社交 id 记录' })
@@ -41,13 +47,13 @@ class UserOptionDto {
 }
 
 export class UserDto extends UserOptionDto {
-  @ApiProperty()
+  @ApiProperty({example:"suemor"})
   @IsString()
   @IsNotEmpty({ message: '用户名？' })
   readonly username: string
 
   @IsString()
-  @ApiProperty()
+  @ApiProperty({example:"123456"})
   @IsNotEmpty({ message: '密码？' })
    password: string
 }

@@ -5,21 +5,23 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+   previewFeatures = ["interactiveTransactions"]
 }
 
 model User {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  username      String      @unique
-  password      String      @unique
-  introduce     String?
-  avatar        String?
-  mail          String?
-  url           String?
-  socialIds     SocialIds[]
-  lastLoginTime DateTime?
-  lastLoginIp   String?
-  authCode      String
-  created       DateTime?   @default(now())
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  username        String      @unique
+  password        String      @unique
+  introduce       String?
+  avatar          String?
+  backgroundImage String?
+  mail            String?
+  url             String?
+  socialIds       SocialIds[]
+  lastLoginTime   DateTime?
+  lastLoginIp     String?
+  authCode        String
+  created         DateTime?   @default(now())
 }
 
 model SocialIds {
@@ -31,11 +33,10 @@ model SocialIds {
   created DateTime? @default(now())
 }
 
-
 model About {
   id      String    @id @default(auto()) @map("_id") @db.ObjectId
   key     String?   @unique
   value   String?
+  detailFlag   Boolean  @default(false) @map("detail_flag")
   created DateTime? @default(now())
 }
-

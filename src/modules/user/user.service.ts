@@ -96,6 +96,7 @@ export class UserService {
         url: true,
         lastLoginTime: true,
         lastLoginIp: true,
+        backgroundImage:true,
         socialIds: {
           select: {
            key:true,

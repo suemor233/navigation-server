@@ -13,5 +13,9 @@ export class AboutModel {
   @ApiProperty({ required: true, example: '2003/11/06' })
   @IsOptional()
   readonly value: string
+
+  @ApiProperty({ required: false, example: '2003/11/06' })
+  @IsOptional()
+  readonly flagDetail: boolean
 }
 
