@@ -1,4 +1,4 @@
-;
+import { BadRequestException } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '~/processors/database/database.service';
 import { SocketGateway } from '~/processors/gateway/ws.gateway';
@@ -6,13 +6,15 @@ import { ProjectModel } from './project.dto';
 
 @Injectable()
 export class ProjectService {
+
+
   constructor(
     private prisma: PrismaService,
     private readonly ws: SocketGateway,
   ) { }
 
   async createProject(project: ProjectModel) {
-     this.emitProjectSocket()
+    this.emitProjectSocket()
     return this.prisma.project.create({
       data: project
     })
@@ -32,11 +34,24 @@ export class ProjectService {
         project
       }
       return projectList
-    }else {
+    } else {
       const project = await this.prisma.project.findMany({ orderBy: { created: 'desc' } })
       return project
     }
+  }
 
+
+  findProjectById(id: string) {
+    const currentProject = this.prisma.project.findFirst({
+      where: {
+        id
+      }
+    })
+
+    if (!currentProject) {
+      throw new BadRequestException('项目不存在')
+    }
+    return currentProject
   }
 
 
@@ -49,6 +64,19 @@ export class ProjectService {
         }
       }
     })
+  }
+
+  async patchProject(id: string, project: ProjectModel) {
+    this.findProjectById(id)
+    this.emitProjectSocket()
+    return this.prisma.project.update({
+      where: { id },
+      data: {
+        ...project
+      }
+    })
+
+
   }
 
   async emitProjectSocket() {

@@ -8,13 +8,15 @@ import { SocketGateway } from './processors/gateway/ws.gateway';
 import { DatabaseModule } from './processors/database/database.module';
 import { AboutModule } from './modules/about/about.module';
 import { ProjectModule } from './modules/project/project.module';
+import { StackModule } from './modules/stack/stack.module';
 
 @Module({
   imports: [
     DatabaseModule,
     UserModule,
     AboutModule,
-    ProjectModule
+    ProjectModule,
+    StackModule
   ].filter(Boolean) as Type<NestModule>[],
   controllers: [AppController],
   providers:[

@@ -48,3 +48,10 @@ model Project {
   img   String
   created DateTime? @default(now())
 }
+
+model Stack {
+  id      String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String   @unique
+  progressValue   Int @default(50)
+  created DateTime? @default(now())
+}
