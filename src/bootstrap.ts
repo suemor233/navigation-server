@@ -61,7 +61,7 @@ export async function bootstrap() {
 
     if (isDev) {
       logger.debug(`Server listen on:: http://localhost:${PORT}`)
-      logger.debug(`swaager文档: http://localhost:${PORT}/api-docs`)
+      logger.debug(`swagger文档: http://localhost:${PORT}/api-docs`)
     }
 
   })
