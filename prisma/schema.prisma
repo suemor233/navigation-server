@@ -40,3 +40,11 @@ model About {
   detailFlag   Boolean  @default(false) @map("detail_flag")
   created DateTime? @default(now())
 }
+
+model Project {
+  id      String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String   //@unique
+  url   String?
+  img   String
+  created DateTime? @default(now())
+}

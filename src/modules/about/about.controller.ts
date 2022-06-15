@@ -9,14 +9,13 @@ import { AboutService } from './about.service';
 @Controller('about')
 export class AboutController {
   constructor(private readonly aboutService: AboutService) {}
-
+  
   @Post()
   @Auth()
   @ApiOperation({ summary: '添加基本介绍' })
   async create(@Body() about: AboutModel[]) {
     return await this.aboutService.createAbout(about)
   }
- 
 
   @Get()
   @ApiOperation({ summary: '获取基本介绍' })
@@ -24,4 +23,6 @@ export class AboutController {
     return await this.aboutService.aboutInfo()
   }
  
+
+
 }
