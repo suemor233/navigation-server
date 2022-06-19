@@ -9,20 +9,27 @@ import { DatabaseModule } from './processors/database/database.module';
 import { AboutModule } from './modules/about/about.module';
 import { ProjectModule } from './modules/project/project.module';
 import { StackModule } from './modules/stack/stack.module';
+import { CacheModule } from './processors/cache/cache.module';
+import { HttpCacheInterceptor } from './common/interceptors/cache.interceptor';
 
 @Module({
   imports: [
     DatabaseModule,
+    CacheModule,
     UserModule,
     AboutModule,
     ProjectModule,
-    StackModule
+    StackModule,
   ].filter(Boolean) as Type<NestModule>[],
   controllers: [AppController],
   providers:[
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpCacheInterceptor, // 4
     },
     {
       provide: APP_INTERCEPTOR,

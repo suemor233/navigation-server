@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException, NotImplementedException, UnsupportedMediaTypeException } from '@nestjs/common';
+import { RedisKeys } from '~/constants/cache.constant';
+import { CacheService } from '~/processors/cache/cache.service';
 import { PrismaService } from '~/processors/database/database.service';
 import { SocketGateway } from '~/processors/gateway/ws.gateway';
 import { AboutModel } from './about.dto';
@@ -9,6 +11,7 @@ export class AboutService {
   constructor(
     private prisma: PrismaService,
     private readonly ws: SocketGateway,
+    private readonly redis: CacheService,
   ) { }
 
   async createAbout(about: AboutModel[]) {
@@ -29,11 +32,23 @@ export class AboutService {
       throw new NotImplementedException('名称不能重复')
     }
 
+    await this.redis.set(RedisKeys.About, about)
     this.ws.server.emit('user-about', await this.aboutInfo())
     return await this.aboutInfo()
   }
 
   async aboutInfo() {
-    return this.prisma.about.findMany({})
+    const cacheAbout = await this.getAboutCache()
+    if (cacheAbout && Object.keys(cacheAbout).length > 0  ) {
+      return cacheAbout
+    } else {
+      const about = await this.prisma.about.findMany({})
+      await this.redis.set(RedisKeys.About, about)
+      return about
+    }
+  }
+
+  async getAboutCache() {
+    return await this.redis.get(RedisKeys.About)
   }
 }

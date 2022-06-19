@@ -17,9 +17,7 @@ export const __secret: any =
   SECURITY.jwtSecret ||
   Buffer.from(getMachineId()).toString('base64').slice(0, 15) ||
   'asjhczxiucipoiopiqm2376'
-if (isDev ) {
-  console.log(__secret)
-}
+
 const jwtModule = JwtModule.registerAsync({
   useFactory() {
     return {

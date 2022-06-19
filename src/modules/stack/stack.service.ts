@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException, NotImplementedException, UnsupportedMediaTypeException } from '@nestjs/common';
+import { RedisKeys } from '~/constants/cache.constant';
+import { CacheService } from '~/processors/cache/cache.service';
 import { PrismaService } from '~/processors/database/database.service';
 import { SocketGateway } from '~/processors/gateway/ws.gateway';
 import { StackModel } from './stack.dto';
@@ -9,6 +11,7 @@ export class StackService {
   constructor(
     private prisma: PrismaService,
     private readonly ws: SocketGateway,
+    private readonly redis: CacheService,
   ) { }
 
   async createStack(stack: StackModel[]) {
@@ -33,12 +36,24 @@ export class StackService {
       }
 
       this.ws.server.emit('user-stack', await this.StackInfo())
+      await this.redis.set(RedisKeys.Stack, stack)
       return await this.StackInfo()
     }
 
   }
 
   async StackInfo() {
-    return this.prisma.stack.findMany({})
+    const cacheStack = await this.getStackCache()
+    if (Object.keys(cacheStack).length > 0) {
+      return cacheStack
+    } else {
+      const stack = await this.prisma.stack.findMany({})
+      await this.redis.set(RedisKeys.Stack, stack)
+      return stack
+    }
+  }
+
+  async getStackCache() {
+    return await this.redis.get(RedisKeys.Stack)
   }
 }

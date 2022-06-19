@@ -1,5 +1,5 @@
 import { SocketGateway } from './../../processors/gateway/ws.gateway';
-import { BadRequestException, ForbiddenException, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, Logger, UnprocessableEntityException, Delete } from '@nestjs/common';
 import { MasterLostException } from '~/common/exceptions/master-lost.exception';
 import { nanoid } from 'nanoid'
 import { LoginDto, UserDto, UserPatchDto } from './user.dto';
@@ -8,13 +8,16 @@ import { hashSync } from 'bcrypt'
 import { getAvatar, sleep } from '~/utils/tool.util';
 import { compareSync } from 'bcrypt'
 import { userType } from './interface/user.interface';
+import { CacheService } from '~/processors/cache/cache.service';
+import { getRedisKey } from '~/utils/redis.util';
+import { RedisKeys } from '~/constants/cache.constant';
 @Injectable()
 export class UserService {
-
-
+  private Logger = new Logger(UserService.name)
   constructor(
     private prisma: PrismaService,
     private readonly ws: SocketGateway,
+    private readonly redis: CacheService,
   ) { }
   async createUser(model: Pick<UserDto, 'username' | 'password'>) {
 
@@ -82,35 +85,54 @@ export class UserService {
     }
     )
 
+    // save to redis
+    process.nextTick(async () => {
+      const redisClient = this.redis.getClient()
+      await redisClient.sadd(
+        getRedisKey(RedisKeys.LoginRecord),
+        JSON.stringify({ date: new Date().toISOString(), ip }),
+      )
+    })
+
+    this.Logger.warn(`主人已登录, IP: ${ip}`)
+
     return PrevFootstep as any
   }
 
   async getUserInfo() {
-    const user = await this.prisma.user.findFirst({
-      select: {
-        id: true,
-        username: true,
-        introduce: true,
-        avatar: true,
-        mail: true,
-        url: true,
-        lastLoginTime: true,
-        lastLoginIp: true,
-        backgroundImage:true,
-        socialIds: {
-          select: {
-           key:true,
-           value:true
+    const userCache = await this.getUserCache()
+    if (userCache && Object.keys(userCache).length > 0) {
+      return userCache
+    } else {
+      const user = await this.prisma.user.findFirst({
+        select: {
+          id: true,
+          username: true,
+          introduce: true,
+          avatar: true,
+          mail: true,
+          url: true,
+          lastLoginTime: true,
+          lastLoginIp: true,
+          backgroundImage: true,
+          socialIds: {
+            select: {
+              key: true,
+              value: true
+            }
           }
-        }
-      },
-      
-    })
-    if (!user) {
-      throw new BadRequestException('没有完成初始化!')
+        },
+
+      })
+      if (!user) {
+        throw new BadRequestException('没有完成初始化!')
+      }
+      const avatar = user.avatar ?? getAvatar(user.mail)
+      const userWrapper = { ...user, avatar }
+      this.setUserCache(userWrapper)
+      return userWrapper
     }
-    const avatar = user.avatar ?? getAvatar(user.mail)
-    return { ...user, avatar }
+
   }
 
 
@@ -140,10 +162,10 @@ export class UserService {
     }
     if (doc.socialIds) {
       const _key = []
-      doc.socialIds.map(item =>{
-        if(_key.indexOf(item.key) === -1){
+      doc.socialIds.map(item => {
+        if (_key.indexOf(item.key) === -1) {
           _key.push(item.key)
-        }else {
+        } else {
           throw new UnprocessableEntityException('不能有重复的社交链接')
         }
       })
@@ -152,12 +174,12 @@ export class UserService {
         where: {
           id: user.id
         },
-        data:{
-          socialIds:{
+        data: {
+          socialIds: {
             create: doc.socialIds
           }
         }
-      
+
       })
     }
     delete doc.socialIds
@@ -171,12 +193,24 @@ export class UserService {
     })
 
     const res = await this.getUserInfo()
+    await this.deleteUserCache()
     this.ws.server.emit('user-update', await this.getUserInfo())
     return res
 
   }
 
 
+  async setUserCache(user: any) {
+    return await this.redis.set(RedisKeys.User, user)
+  }
+
+  async getUserCache() {
+    return await this.redis.get(RedisKeys.User)
+  }
+
+  async deleteUserCache() {
+    return this.redis.getClient().del(RedisKeys.User)
+  }
 
   async hasMaster() {
     return !!(await this.prisma.user.count())
