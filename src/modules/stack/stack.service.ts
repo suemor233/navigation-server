@@ -44,7 +44,7 @@ export class StackService {
 
   async StackInfo() {
     const cacheStack = await this.getStackCache()
-    if (Object.keys(cacheStack).length > 0) {
+    if (cacheStack && Object.keys(cacheStack).length > 0) {
       return cacheStack
     } else {
       const stack = await this.prisma.stack.findMany({})
