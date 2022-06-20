@@ -200,7 +200,7 @@ export class UserService {
   }
 
 
-  async setUserCache(user: any) {
+  async setUserCache(user: userType) {
     return await this.redis.set(RedisKeys.User, user)
   }
 
