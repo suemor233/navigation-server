@@ -15,7 +15,7 @@ model User {
   introduce       String?
   avatar          String?
   backgroundImage String?
-  mail            String?
+  mail            String
   url             String?
   socialIds       SocialIds[]
   lastLoginTime   DateTime?

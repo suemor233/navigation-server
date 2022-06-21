@@ -14,14 +14,13 @@ import { IsAllowedUrl } from '~/utils/validator/isAllowedUrl'
 class UserOptionDto {
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @ApiProperty({ example: '我是练习时长两年半的个人练习生' })
   readonly introduce?: string
 
   @ApiProperty({ required: false, example: 'example@example.com' })
   @IsEmail()
-  @IsOptional()
-  readonly mail?: string
+  @IsNotEmpty()
+  readonly mail: string
 
   @ApiProperty({ required: false, example: 'http://example.com' })
   @IsUrl({ require_protocol: true }, { message: '请更正为正确的网址' })

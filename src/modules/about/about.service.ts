@@ -3,6 +3,7 @@ import { RedisKeys } from '~/constants/cache.constant';
 import { CacheService } from '~/processors/cache/cache.service';
 import { PrismaService } from '~/processors/database/database.service';
 import { SocketGateway } from '~/processors/gateway/ws.gateway';
+import { getRedisKey } from '~/utils/redis.util';
 import { AboutModel } from './about.dto';
 
 @Injectable()
@@ -32,7 +33,7 @@ export class AboutService {
       throw new NotImplementedException('名称不能重复')
     }
 
-    await this.redis.set(RedisKeys.About, about)
+    await this.redis.set(getRedisKey(RedisKeys.About), about)
     this.ws.server.emit('user-about', await this.aboutInfo())
     return await this.aboutInfo()
   }
@@ -43,12 +44,12 @@ export class AboutService {
       return cacheAbout
     } else {
       const about = await this.prisma.about.findMany({})
-      await this.redis.set(RedisKeys.About, about)
+      await this.redis.set(getRedisKey(RedisKeys.About), about)
       return about
     }
   }
 
   async getAboutCache() {
-    return await this.redis.get(RedisKeys.About)
+    return await this.redis.get(getRedisKey(RedisKeys.About))
   }
 }

@@ -19,8 +19,8 @@ export class UserService {
     private readonly ws: SocketGateway,
     private readonly redis: CacheService,
   ) { }
-  async createUser(model: Pick<UserDto, 'username' | 'password'>) {
-
+  async createUser(model: Pick<UserDto, 'username' | 'password' | 'mail'>) {
+    await this.redis.cleanAllRedisKey()
     const hasMaster = await this.hasMaster()
 
     // 禁止注册两个以上账户
@@ -201,15 +201,15 @@ export class UserService {
   }
 
   async setUserCache(user: userType) {
-    return await this.redis.set(RedisKeys.User, user)
+    return await this.redis.set(getRedisKey(RedisKeys.User), user)
   }
 
   async getUserCache() {
-    return await this.redis.get(RedisKeys.User)
+    return await this.redis.get(getRedisKey(RedisKeys.User))
   }
 
   async deleteUserCache() {
-    return this.redis.getClient().del(RedisKeys.User)
+    return this.redis.getClient().del(getRedisKey(RedisKeys.User))
   }
 
   async hasMaster() {

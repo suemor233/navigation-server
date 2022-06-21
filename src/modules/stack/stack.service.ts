@@ -3,6 +3,7 @@ import { RedisKeys } from '~/constants/cache.constant';
 import { CacheService } from '~/processors/cache/cache.service';
 import { PrismaService } from '~/processors/database/database.service';
 import { SocketGateway } from '~/processors/gateway/ws.gateway';
+import { getRedisKey } from '~/utils/redis.util';
 import { StackModel } from './stack.dto';
 
 @Injectable()
@@ -36,7 +37,7 @@ export class StackService {
       }
 
       
-      await this.redis.set(RedisKeys.Stack, stack)
+      await this.redis.set(getRedisKey(RedisKeys.Stack), stack)
       this.ws.server.emit('user-stack', await this.StackInfo())
       return await this.StackInfo()
     }
@@ -50,12 +51,12 @@ export class StackService {
       return cacheStack
     } else {
       const stack = await this.prisma.stack.findMany({})
-      await this.redis.set(RedisKeys.Stack, stack)
+      await this.redis.set(getRedisKey(RedisKeys.Stack), stack)
       return stack
     }
   }
 
   async getStackCache() {
-    return await this.redis.get(RedisKeys.Stack)
+    return await this.redis.get(getRedisKey(RedisKeys.Stack))
   }
 }
