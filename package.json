@@ -1,10 +1,12 @@
 {
-  "name": "navigation-server",
+  "name": "@suemor/navigation-server",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "suemor <https://suemor.com>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "homepage": "https://github.com/suemor233/navigation-server",
+  "issues": "https://github.com/suemor233/navigation-server/issues",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

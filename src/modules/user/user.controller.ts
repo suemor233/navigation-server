@@ -61,6 +61,13 @@ export class UserController {
     return 'ok'
   }
 
+  @Get('init')
+  @ApiOperation({ summary: '判断是否初始化完成' })
+  async checkInit() {
+    return {
+      is_init: await this.userService.hasMaster(),
+    }
+  }
 
   @Patch()
   @ApiOperation({ summary: '修改主人的信息' })

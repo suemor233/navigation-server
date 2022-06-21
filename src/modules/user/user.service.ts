@@ -192,13 +192,13 @@ export class UserService {
       }
     })
 
-    const res = await this.getUserInfo()
     await this.deleteUserCache()
+    const res = await this.getUserInfo()
+
     this.ws.server.emit('user-update', await this.getUserInfo())
     return res
 
   }
-
 
   async setUserCache(user: userType) {
     return await this.redis.set(RedisKeys.User, user)

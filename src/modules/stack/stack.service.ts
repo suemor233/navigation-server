@@ -35,14 +35,16 @@ export class StackService {
         throw new NotImplementedException('名称不能重复')
       }
 
-      this.ws.server.emit('user-stack', await this.StackInfo())
+      
       await this.redis.set(RedisKeys.Stack, stack)
+      this.ws.server.emit('user-stack', await this.StackInfo())
       return await this.StackInfo()
     }
 
   }
 
   async StackInfo() {
+
     const cacheStack = await this.getStackCache()
     if (cacheStack && Object.keys(cacheStack).length > 0) {
       return cacheStack
