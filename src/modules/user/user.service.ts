@@ -70,6 +70,7 @@ export class UserService {
     if (!master) {
       throw new MasterLostException()
     }
+    await this.deleteUserCache()
     const PrevFootstep = {
       lastLoginTime: master.lastLoginTime || new Date(1586090559569),
       lastLoginIp: master.lastLoginIp || null,
@@ -101,6 +102,7 @@ export class UserService {
 
   async getUserInfo() {
     const userCache = await this.getUserCache()
+
     if (userCache && Object.keys(userCache).length > 0) {
       return userCache
     } else {

@@ -23,4 +23,5 @@ jobs:
       - name: Build
         run: |
           pnpm install
+          npx prisma generate
           pnpm build  # 执行打包
