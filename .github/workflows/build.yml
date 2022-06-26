@@ -50,8 +50,3 @@ jobs:
         uses: supercharge/redis-github-action@1.4.0
         with:
           redis-version: 6
-      - name: Test Bundle Server
-        run: |
-          bash scripts/workflow/test-server.sh
-  test:
-    uses: ./.github/workflows/test.yml
