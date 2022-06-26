@@ -33,7 +33,7 @@ export class AboutService {
       throw new NotImplementedException('名称不能重复')
     }
 
-    await this.redis.set(getRedisKey(RedisKeys.About), about)
+    await this.redis.getClient().del(getRedisKey(RedisKeys.About))
     this.ws.server.emit('user-about', await this.aboutInfo())
     return await this.aboutInfo()
   }

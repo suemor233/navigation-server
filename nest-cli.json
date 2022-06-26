@@ -1,18 +1,19 @@
 {
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
-  "projects": {
-    "db": {
-      "type": "library",
-      "root": "libs/db",
-      "entryFile": "index",
-      "sourceRoot": "libs/db/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/db/tsconfig.lib.json"
-      }
-    }
-  },
   "compilerOptions": {
-    "webpack": true
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "classValidatorShim": false,
+          "introspectComments": true,
+          "dtoFileNameSuffix": [
+            ".dto.ts",
+            ".model.ts"
+          ]
+        }
+      }
+    ]
   }
 }

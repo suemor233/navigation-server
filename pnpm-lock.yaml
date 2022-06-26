@@ -25,6 +25,7 @@ specifiers:
   '@types/ws': ^8.5.3
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
+  '@vercel/ncc': ^0.34.0
   bcrypt: ^5.0.1
   cache-manager: ^3.4.3
   cache-manager-ioredis: ^2.1.0
@@ -69,6 +70,7 @@ dependencies:
   '@nestjs/swagger': 5.2.1_zi4tuyx3qtp34xthrn3ho5tamm
   '@nestjs/websockets': 8.4.6_6a7csugkuqc2e66avgu3rijc4a
   '@prisma/client': 3.15.1_prisma@3.15.1
+  '@vercel/ncc': 0.34.0
   bcrypt: 5.0.1
   cache-manager: 3.6.3
   cache-manager-ioredis: 2.1.0
@@ -1530,6 +1532,11 @@ packages:
       '@typescript-eslint/types': 5.27.0
       eslint-visitor-keys: 3.3.0
     dev: true
+
+  /@vercel/ncc/0.34.0:
+    resolution: {integrity: sha512-G9h5ZLBJ/V57Ou9vz5hI8pda/YQX5HQszCs3AmIus3XzsmRn/0Ptic5otD3xVST8QLKk7AMk7AqpsyQGN7MZ9A==}
+    hasBin: true
+    dev: false
 
   /@webassemblyjs/ast/1.11.1:
     resolution: {integrity: sha512-ukBh14qFLjxTQNTXocdyksN5QdM28S1CxHt2rdskFyL+xFV7VremuBLVbmCePj+URalXBENx/9Lm7lnhihtCSw==}
