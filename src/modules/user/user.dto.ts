@@ -20,6 +20,7 @@ class UserOptionDto {
   @ApiProperty({ required: false, example: 'example@example.com' })
   @IsEmail()
   @IsNotEmpty()
+  @IsOptional()
   readonly mail: string
 
   @ApiProperty({ required: false, example: 'http://example.com' })

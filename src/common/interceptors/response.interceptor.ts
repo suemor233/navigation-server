@@ -48,7 +48,6 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
           return data
         }
 
-        console.log();
         return isArrayLike(data) ? { data } : data
       }),
     )

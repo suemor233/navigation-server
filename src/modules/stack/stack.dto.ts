@@ -4,6 +4,9 @@ import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-valida
 import { ApiProperty } from '@nestjs/swagger'
 
 export class StackModel {
+
+
+  
   @ApiProperty({ required: true, example: 'vue3' })
   @IsString()
   @IsNotEmpty()
