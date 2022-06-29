@@ -38,7 +38,7 @@ export class AboutService {
     }
 
     await this.redis.getClient().del(getRedisKey(RedisKeys.About));
-    this.ws.server.emit('user-about', await this.basicInfo());
+    this.emitBasicSocket()
     return await this.basicInfo();
   }
 
@@ -57,8 +57,8 @@ export class AboutService {
     return await this.redis.get(getRedisKey(RedisKeys.About));
   }
 
-  createDetail(about: DetailModel) {
-    const createAbout = this.prisma.aboutDetail.create({
+  async createDetail(about: DetailModel) {
+    const createAbout = await this.prisma.aboutDetail.create({
       data: about,
     });
     this.emitDetailSocket();
@@ -102,9 +102,9 @@ export class AboutService {
     this.emitDetailSocket()
     return _deleteDetail
   }
-  patchDetail(id: string, aboutDetail: DetailModel) {
+  async patchDetail(id: string, aboutDetail: DetailModel) {
     this.findDetailById(id)
-    const _patchDetail = this.prisma.aboutDetail.update({
+    const _patchDetail = await this.prisma.aboutDetail.update({
       where: { id },
       data: {
         ...aboutDetail
@@ -125,6 +125,10 @@ export class AboutService {
       throw new BadRequestException('项目不存在')
     }
     return currentDetail
+  }
+
+  async emitBasicSocket() {
+    this.ws.server.emit('about-basic', await this.basicInfo());
   }
 
   async emitDetailSocket() {

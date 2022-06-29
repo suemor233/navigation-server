@@ -12,7 +12,7 @@ export class ProjectService {
   ) {}
 
   async createProject(project: ProjectModel) {
-    const _project = this.prisma.project.create({
+    const _project = await this.prisma.project.create({
       data: project,
     });
     this.emitProjectSocket();
@@ -73,7 +73,7 @@ export class ProjectService {
 
   async patchProject(id: string, project: ProjectModel) {
     this.findProjectById(id);
-    const _patchProject = this.prisma.project.update({
+    const _patchProject = await this.prisma.project.update({
       where: { id },
       data: {
         ...project,

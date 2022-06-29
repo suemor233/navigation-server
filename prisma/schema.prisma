@@ -41,18 +41,20 @@ model AboutBasic {
 }
 
 model AboutDetail {
-  id      String    @id @default(auto()) @map("_id") @db.ObjectId
-  title   String?   @unique
-  content String?
-  created DateTime? @default(now())
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  title    String?   @unique
+  content  String?
+  created  DateTime? @default(now())
+  modified DateTime? @updatedAt
 }
 
 model Project {
   id      String    @id @default(auto()) @map("_id") @db.ObjectId
-  name    String //@unique
+  name    String    @unique
   url     String?
   img     String
   created DateTime? @default(now())
+   modified DateTime? @updatedAt
 }
 
 model Stack {
