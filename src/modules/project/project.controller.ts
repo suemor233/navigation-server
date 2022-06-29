@@ -31,6 +31,7 @@ export class ProjectController {
   }
 
   @Put(':id')
+  @Auth()
   @ApiOperation({ summary: '修改项目' })
   async PatchProject(@Param('id') id:string, @Body() project: ProjectModel) {
     return await this.projectService.patchProject(id,project);
