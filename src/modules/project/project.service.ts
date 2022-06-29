@@ -23,7 +23,7 @@ export class ProjectService {
     if (pageNum && pageSize) {
       const itemCount = await this.prisma.project.count() || 1;
       const project = await this.prisma.project.findMany({
-        orderBy: { created: 'desc' },
+        orderBy: { created: 'asc' },
         skip: (pageNum - 1) * pageSize,
         take: pageSize,
       });
@@ -39,7 +39,7 @@ export class ProjectService {
       return projectList;
     } else {
       const project = await this.prisma.project.findMany({
-        orderBy: { created: 'desc' },
+        orderBy: { created: 'asc' },
       });
       return project;
     }

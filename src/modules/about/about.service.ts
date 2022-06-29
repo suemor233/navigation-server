@@ -69,7 +69,7 @@ export class AboutService {
     if (pageNum && pageSize) {
       const itemCount = await this.prisma.aboutDetail.count() || 1;
       const aboutDetail = await this.prisma.aboutDetail.findMany({
-        orderBy: { created: 'desc' },
+        orderBy: { created: 'asc' },
         skip: (pageNum - 1) * pageSize,
         take: pageSize,
       });
@@ -85,7 +85,7 @@ export class AboutService {
       return aboutDetailList;
     } else {
       const aboutDetail = await this.prisma.aboutDetail.findMany({
-        orderBy: { created: 'desc' },
+        orderBy: { created: 'asc' },
       });
       return aboutDetail;
     }
