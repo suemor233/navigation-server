@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   NotImplementedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { RedisKeys } from '~/constants/cache.constant';
 import { CacheService } from '~/processors/cache/cache.service';
@@ -20,25 +21,30 @@ export class AboutService {
   ) {}
 
   async createBasic(about: BasicModel[]) {
+    const _key = [];
     about.map((item) => {
-      if (!item.key && !item.value) {
-        throw new NotFoundException('输入不能为空');
+      if (_key.indexOf(item.key) === -1) {
+        _key.push(item.key);
+      } else {
+        throw new UnprocessableEntityException('不能有重复的社交链接');
       }
     });
 
     try {
       await this.prisma.$transaction(async (prisma) => {
         await prisma.aboutBasic.deleteMany({});
-        await prisma.aboutBasic.createMany({
-          data: about,
-        });
+
+        _key.length &&
+          (await prisma.aboutBasic.createMany({
+            data: about,
+          }));
       });
     } catch (error) {
-      throw new NotImplementedException('名称不能重复');
+      throw new NotImplementedException('未知异常');
     }
 
     await this.redis.getClient().del(getRedisKey(RedisKeys.About));
-    this.emitBasicSocket()
+    this.emitBasicSocket();
     return await this.basicInfo();
   }
 
@@ -67,7 +73,7 @@ export class AboutService {
 
   async findDetail(pageNum?: number, pageSize?: number) {
     if (pageNum && pageSize) {
-      const itemCount = await this.prisma.aboutDetail.count() || 1;
+      const itemCount = (await this.prisma.aboutDetail.count()) || 1;
       const aboutDetail = await this.prisma.aboutDetail.findMany({
         orderBy: { created: 'asc' },
         skip: (pageNum - 1) * pageSize,
@@ -92,39 +98,38 @@ export class AboutService {
   }
 
   async deleteDetail(ids: string[]) {
-    const  _deleteDetail =  await this.prisma.aboutDetail.deleteMany({
+    const _deleteDetail = await this.prisma.aboutDetail.deleteMany({
       where: {
         id: {
-          in: ids
-        }
-      }
-    })
-    this.emitDetailSocket()
-    return _deleteDetail
+          in: ids,
+        },
+      },
+    });
+    this.emitDetailSocket();
+    return _deleteDetail;
   }
   async patchDetail(id: string, aboutDetail: DetailModel) {
-    this.findDetailById(id)
+    this.findDetailById(id);
     const _patchDetail = await this.prisma.aboutDetail.update({
       where: { id },
       data: {
-        ...aboutDetail
-      }
-    })
-    this.emitDetailSocket()
-    return _patchDetail
-
+        ...aboutDetail,
+      },
+    });
+    this.emitDetailSocket();
+    return _patchDetail;
   }
   findDetailById(id: string) {
     const currentDetail = this.prisma.aboutDetail.findFirst({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
 
     if (!currentDetail) {
-      throw new BadRequestException('项目不存在')
+      throw new BadRequestException('项目不存在');
     }
-    return currentDetail
+    return currentDetail;
   }
 
   async emitBasicSocket() {

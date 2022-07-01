@@ -11,6 +11,7 @@ import { ProjectModule } from './modules/project/project.module';
 import { StackModule } from './modules/stack/stack.module';
 import { CacheModule } from './processors/cache/cache.module';
 import { HttpCacheInterceptor } from './common/interceptors/cache.interceptor';
+import { AggregateModule } from './modules/aggregate/aggregate.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { HttpCacheInterceptor } from './common/interceptors/cache.interceptor';
     AboutModule,
     ProjectModule,
     StackModule,
+    AggregateModule
   ].filter(Boolean) as Type<NestModule>[],
   controllers: [AppController],
   providers:[
