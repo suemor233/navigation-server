@@ -31,7 +31,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
           HttpStatus.INTERNAL_SERVER_ERROR
 
     const res = (exception as any).response
-  
+    console.log( (exception as any)?.message);
     response
       .status(status)
       .type('application/json')

@@ -12,7 +12,10 @@ import { StackModule } from './modules/stack/stack.module';
 import { CacheModule } from './processors/cache/cache.module';
 import { HttpCacheInterceptor } from './common/interceptors/cache.interceptor';
 import { AggregateModule } from './modules/aggregate/aggregate.module';
-
+import { AnalyzeModule } from './modules/analyze/analyze.module';
+import { AnalyzeInterceptor } from './common/interceptors/analyze.interceptor';
+import { ToolModule } from './modules/tool/tool.module';
+import { HelperModule } from './processors/helper/helper.module'
 @Module({
   imports: [
     DatabaseModule,
@@ -21,13 +24,20 @@ import { AggregateModule } from './modules/aggregate/aggregate.module';
     AboutModule,
     ProjectModule,
     StackModule,
-    AggregateModule
+    AggregateModule,
+    AnalyzeModule,
+    ToolModule,
+    HelperModule
   ].filter(Boolean) as Type<NestModule>[],
   controllers: [AppController],
   providers:[
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AnalyzeInterceptor,
     },
     {
       provide: APP_INTERCEPTOR,

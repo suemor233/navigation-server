@@ -49,12 +49,12 @@ model AboutDetail {
 }
 
 model Project {
-  id      String    @id @default(auto()) @map("_id") @db.ObjectId
-  name    String    @unique
-  url     String?
-  img     String
-  created DateTime? @default(now())
-   modified DateTime? @updatedAt
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String    @unique
+  url      String?
+  img      String
+  created  DateTime? @default(now())
+  modified DateTime? @updatedAt
 }
 
 model Stack {
@@ -62,4 +62,14 @@ model Stack {
   name          String    @unique
   progressValue Int       @default(50)
   created       DateTime? @default(now())
+}
+
+model Analyzes {
+  id      String    @id @default(auto()) @map("_id") @db.ObjectId
+  ip      String?
+  path    String?
+  browser String?
+  os      String?
+  ua      String?
+  created DateTime? @default(now())
 }
