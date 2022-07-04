@@ -48,10 +48,19 @@ export class UserController {
 
   @Get()
   @ApiOperation({
-    summary:'获取用户信息',
+    summary:'获取用户基本信息',
   })
   async getUserInfo() {
     return this.userService.getUserInfo()
+  }
+
+  @Get('/all')
+  @ApiOperation({
+    summary:'获取用户全部信息',
+  })
+  @Auth()
+  async getUserInfoAll() {
+    return this.userService.getUserInfoAll()
   }
   
   @Get('check_logged')

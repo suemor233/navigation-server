@@ -18,6 +18,7 @@ import {
 import { getNestExecutionContextRequest } from '~/transformers/get-req.transformer';
 import { getIp } from '~/utils/ip.util';
 import { PrismaService } from '~/processors/database/database.service';
+import { isDev } from '~/global/env.global';
 
 @Injectable()
 export class AnalyzeInterceptor implements NestInterceptor {
@@ -46,14 +47,17 @@ export class AnalyzeInterceptor implements NestInterceptor {
     }
     const ip = getIp(request);
 
-    // if req from SSR server, like 127.0.0.1, skip
-    if (['127.0.0.1', 'localhost', '::-1'].includes(ip)) {
-      return call$
+    if (!isDev){
+      // if req from SSR server, like 127.0.0.1, skip
+      if (['127.0.0.1', 'localhost', '::-1'].includes(ip)) {
+        return call$;
+      }
+      // if login
+      if (request.user) {
+        return call$;
+      }
     }
-    // if login
-    if (request.user) {
-      return call$
-    }
+
 
     // if user agent is in bot list, skip
     if (isbot(request.headers['user-agent'])) {
@@ -72,13 +76,13 @@ export class AnalyzeInterceptor implements NestInterceptor {
           this.parser.setUA(request.headers['user-agent']);
 
         const ua = this.parser.getResult();
-       await this.prisma.analyzes.create({
+        await this.prisma.analyzes.create({
           data: {
             ip,
             path: new URL(`http://a.com${url}`).pathname,
             browser: ua.browser.name + ' ' + ua.browser.version,
             os: ua.os.name + ' ' + ua.os.version,
-            ua:ua.ua
+            ua: ua.ua,
           },
         });
       } catch (e) {

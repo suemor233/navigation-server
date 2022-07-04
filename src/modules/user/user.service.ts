@@ -102,10 +102,37 @@ export class UserService {
 
   async getUserInfo() {
     const userCache = await this.getUserCache()
-
     if (userCache && Object.keys(userCache).length > 0) {
       return userCache
     } else {
+      const user = await this.prisma.user.findFirst({
+        select: {
+          id: true,
+          username: true,
+          introduce: true,
+          avatar: true,
+          mail: true,
+          url: true,
+          backgroundImage: true,
+          socialIds: {
+            select: {
+              key: true,
+              value: true
+            }
+          }
+        },
+      })
+      if (!user) {
+        throw new BadRequestException('没有完成初始化!')
+      }
+      const avatar = user.avatar ?? getAvatar(user.mail)
+      const userWrapper = { ...user, avatar }
+      this.setUserCache(userWrapper)
+      return userWrapper
+    }
+  }
+
+  async getUserInfoAll() {
       const user = await this.prisma.user.findFirst({
         select: {
           id: true,
@@ -124,17 +151,13 @@ export class UserService {
             }
           }
         },
-
       })
       if (!user) {
         throw new BadRequestException('没有完成初始化!')
       }
       const avatar = user.avatar ?? getAvatar(user.mail)
       const userWrapper = { ...user, avatar }
-      this.setUserCache(userWrapper)
       return userWrapper
-    }
-
   }
 
 
