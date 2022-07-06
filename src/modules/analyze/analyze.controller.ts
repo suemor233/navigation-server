@@ -6,7 +6,7 @@ import { AnalyzeService } from './analyze.service';
 
 @Controller('analyze')
 @ApiName
-@Auth()
+// @Auth()
 export class AnalyzeController {
   constructor(private readonly analyzeService: AnalyzeService) {}
 
@@ -15,6 +15,12 @@ export class AnalyzeController {
   async findProject(@Query('pageNum') pageNum = 1,@Query('pageSize')pageSize = 50) {
     return await this.analyzeService.findAnalyze(Number(pageNum),Number(pageSize));
   }
+
+  @Get('/aggregate')
+  async getFragment() {
+    return await this.analyzeService.getPvAggregate();
+  }
+  
 
   @Delete('/')
   async clearAnalyze() {

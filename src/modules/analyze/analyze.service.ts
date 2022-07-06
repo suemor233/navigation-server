@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '~/processors/database/database.service';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class AnalyzeService {
@@ -25,5 +26,33 @@ export class AnalyzeService {
 
   async clearAnalyze() {
     return await this.prisma.analyzes.deleteMany({});
+  }
+
+  async getPvAggregate() {
+    const now = dayjs();
+    const beforeDawn = now.set('minute', 0).set('second', 0).set('hour', 0);
+    let cond = beforeDawn.toDate();
+    const time = await this.prisma.analyzes.findMany({
+      where: {
+        created: {
+          gte: cond,
+        },
+      },
+    });
+
+    const dayData = Array(24)
+      .fill(undefined)
+      .map((v, i) => {
+        return {
+          hour: `${i}时`,
+          key: 'pv',
+          value:  0,
+        }
+      })
+
+    time.map((item) => {
+      dayData[item.created.getHours()].value++
+    });
+    return dayData;
   }
 }

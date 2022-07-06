@@ -2,7 +2,7 @@ import { SocketGateway } from './../../processors/gateway/ws.gateway';
 import { BadRequestException, ForbiddenException, Injectable, Logger, UnprocessableEntityException, Delete } from '@nestjs/common';
 import { MasterLostException } from '~/common/exceptions/master-lost.exception';
 import { nanoid } from 'nanoid'
-import { LoginDto, UserDto, UserPatchDto } from './user.dto';
+import { UserDto, UserPatchDto } from './user.dto';
 import { PrismaService } from '~/processors/database/database.service';
 import { hashSync } from 'bcrypt'
 import { getAvatar, sleep } from '~/utils/tool.util';
@@ -218,7 +218,7 @@ export class UserService {
     })
 
     await this.deleteUserCache()
-    const res = await this.getUserInfo()
+    const res = await this.getUserInfoAll()
 
     this.ws.server.emit('user-update', await this.getUserInfo())
     return res
