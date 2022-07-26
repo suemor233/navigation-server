@@ -6,6 +6,7 @@ import { SocketModule } from '~/processors/gateway/ws.module';
 @Module({
   controllers: [AboutController],
   providers: [AboutService],
-  imports: [SocketModule]
+  imports: [SocketModule],
+  exports:[AboutService]
 })
 export class AboutModule {}
