@@ -26,8 +26,6 @@ export class AggregateController {
       this.userService.getUserInfo(),
       this.aboutService.basicInfo(),
       this.aboutService.findDetail(),
-      this.projectService.findProject(),
-      this.StackService.StackInfo(),
     ])
 
     const [user, aboutBasic, aboutDetail, project, stack] = tasks.map((t) => {
